@@ -52,14 +52,24 @@ struct LockScreenLiveActivityView: View {
             VStack(alignment: .center) {
                 // Jelenlegi óra
                 VStack {
+                  if(context.state.title.contains("Az első órádig")) {
+                    Text(context.state.title)
+                            .font(.system(size: 15))
+                            .bold()
+                            .multilineTextAlignment(.center)
+                  } else {
                     Text(context.state.index + " " + context.state.title)
-                        .font(.body)
-                        .bold()
-                        .multilineTextAlignment(.center)
-                    
-                    Text("Terem: \(context.state.subtitle)")
-                        .italic()
-                        .font(.caption)
+                      .font(.body)
+                      .bold()
+                      .multilineTextAlignment(.center)
+                  }
+
+                //Terem
+                if (!context.state.subtitle.isEmpty) {
+                      Text(context.state.subtitle)
+                          .italic()
+                          .font(.caption)
+                    }
                 }
 
                 // Leírás
@@ -91,7 +101,7 @@ struct LockScreenLiveActivityView: View {
                 .frame(width: 85)
                 .font(.title2)
                 .monospacedDigit()
-                .padding(.trailing, CGFloat(24))
+                .padding(.trailing)
         }
         .activityBackgroundTint(
             context.state.color != "#676767"
@@ -135,30 +145,49 @@ struct LiveCardWidget: Widget {
                 }
                 DynamicIslandExpandedRegion(.center) {
                     VStack(alignment: .center) {
+                      if(context.state.title.contains("Az első órádig")) {
+                        Text("Az első órád:")
+                          .font(.body)
+                          .bold()
+                          .padding(.leading, 15)
+                        Text(context.state.nextSubject)
+                          .font(.body)
+                          .padding(.leading, 15)
+                        
+                        Text("Ebben a teremben:")
+                          .font(.body)
+                          .bold()
+                          .padding(.leading, 15)
+                        Text(context.state.nextRoom)
+                          .font(.body)
+                          .padding(.leading, 15)
+                      } else {
                         Text(context.state.index + context.state.title)
-                            .lineLimit(1)
-                            .font(.body)
-                            .bold()
+                          .lineLimit(1)
+                          .font(.body)
+                          .bold()
                         
                         Text(context.state.subtitle)
-                            .lineLimit(1)
-                            .font(.subheadline)
-                        Spacer()
+                          .lineLimit(1)
+                          .font(.subheadline)
+                        Spacer(minLength: 5)
                         
-                        Text(context.state.description)
-                            .lineLimit(2)
-                            .font(.caption)
+                        Text("Következő óra és terem:")
+                          .font(.system(size: 13))
+                        Text(context.state.nextSubject)
+                          .font(.caption)
+                        Text(context.state.nextRoom)
+                          .font(.caption2)
+                      }
+                      
+                      
                     }.padding(EdgeInsets(top: 0.0, leading: 5.0, bottom: 0.0, trailing: 0.0))
+                  
                 }
                 
                 /// Compact
             } compactLeading: {
-                Label {
-                    Text(context.state.title)
-                } icon: {
-                    Image(systemName: context.state.icon)
-                }
-                .font(.caption2)
+                  Image(systemName: context.state.icon)
             }
         compactTrailing: {
             Text(timerInterval: context.state.date, countsDown: true)
